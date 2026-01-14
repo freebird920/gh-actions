@@ -1,0 +1,28 @@
+name: 5분 대기조 (Wake Up Service)
+
+on:
+  # 1. 스케줄러: 5분마다 실행 (Cron 문법)
+  schedule:
+    - cron: "*/5 * * * *"
+  # 2. 수동 실행 버튼: 테스트용 (Actions 탭에서 클릭 가능)
+  workflow_dispatch:
+
+jobs:
+  wake_up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: API 찌르기 (Curl)
+        run: |
+          # 1번 타자
+          curl -v -X GET https://freebird920-slat-reranker.hf.space/openapi.json \
+            -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
+
+          # 2번 타자 (필요하면 계속 추가)
+          curl -v -X GET https://freebird920-slat-reranker-1.hf.space/openapi.json \
+             -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
+          # 3번 타자
+          curl -v -X GET https://freebird920-slat-reranker-2.hf.space/openapi.json \
+            -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
+          # 4번 타자 (필요하면 계속 추가)
+          curl -v -X GET https://freebird920-slat-reranker-3.hf.space/openapi.json \
+             -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
