@@ -28,6 +28,8 @@ jobs:
              -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
 
           # 크롤러 깨우기
+          curl -v -X GET https://freebird920-slat-crawler-master.hf.space/openapi.json \
+             -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
           # 1번 타자
           curl -v -X GET https://freebird920-slat-crawler-1.hf.space/openapi.json \
              -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
