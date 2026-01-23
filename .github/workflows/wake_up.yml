@@ -42,3 +42,8 @@ jobs:
           # 4번 타자
           curl -v -X GET https://freebird920-slat-crawler-4.hf.space/openapi.json \
              -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
+
+
+          # 4번 타자
+          curl -v -X GET https://freebird920-slat-reamer-hf-01.hf.space/openapi.json \
+             -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
