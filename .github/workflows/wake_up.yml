@@ -42,3 +42,7 @@ jobs:
           # HF-AIS
           curl -v -X GET https://freebird920-slat-reamer-hf-ais.hf.space/openapi.json \
             -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
+
+          # HF-QUERY-EMBEDER
+          curl -v -X GET https://freebird920-slat-reamer-hf-query-embeder-01.hf.space/openapi.json \
+            -H "Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
