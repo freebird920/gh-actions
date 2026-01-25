@@ -46,6 +46,6 @@ jobs:
             -X POST https://freebird920-slat-reamer-hf-query-embeder-01.hf.space/embed \
             -H "Content-Type: application/json" \
             -H "$WORKER_HEADER" \
-            -d '{"text": "query: wake_up_check"}'
+            -d '{"text": "0"}'
 
           echo "✅ 모든 서버 기상 완료!"
