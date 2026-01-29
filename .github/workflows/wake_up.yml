@@ -34,6 +34,9 @@ jobs:
           curl -s -o /dev/null -w "%{http_code} Crawler 1\n" -X GET https://freebird920-slat-crawler-1.hf.space/openapi.json -H "$READ_HEADER"
           curl -s -o /dev/null -w "%{http_code} Reamer-AIS\n" -X GET https://freebird920-slat-reamer-hf-ais.hf.space/openapi.json -H "$READ_HEADER"
 
+          curl -s -o /dev/null -w "%{http_code} Reamer-MASTER\n" -X GET https://freebird920-slat-reamer-hf-reamer-master.hf.space/openapi.json -H "$READ_HEADER"
+          curl -s -o /dev/null -w "%{http_code} Reamer-AIS\n" -X GET https://freebird920-slat-reamer-hf-query-vector-01.hf.space/openapi.json -H "$READ_HEADER"
+
           # ---------------------------------------------------------
           # 2. 임베딩 서버 (POST /embed) - 무겁게 찌르기 (Heavy Inference)
           # 실제 텍스트를 보내서 CPU/GPU가 일을 하게 만듭니다.
