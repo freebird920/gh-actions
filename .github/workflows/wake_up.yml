@@ -48,7 +48,7 @@ jobs:
           curl -s -o /dev/null -w "%{http_code} Embedder-01\n" \
             -X POST https://freebird920-slat-reamer-hf-query-embeder-01.hf.space/embed \
             -H "Content-Type: application/json" \
-            -H "$WORKER_HEADER" \
+            -H "$READ_HEADER" \
             -d '{"text": "query: ping"}'
 
           echo "✅ 모든 서버 기상 완료!"
