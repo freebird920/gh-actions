@@ -1,13 +1,10 @@
 name: Service Keeper (Wake Up Service)
 
 on:
-  # 1. 10분마다 실행
   schedule:
-    - cron: "*/10 * * * *"
-  # 2. 코드 푸시할 때도 실행
+    - cron: "*/10 * * * *"  # 10분마다
   push:
     branches: [ "main" ]
-  # 3. 수동 실행
   workflow_dispatch:
 
 jobs:
@@ -15,51 +12,51 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # (Go 설치, 코드 체크아웃 필요 없음! 다 삭제)
-
       - name: Wake Up All Services (Curl)
         run: |
           echo "🔥 서버 대깨우기 작전 시작..."
           
-          # 공통 헤더 변수
+          # 공통 헤더
           READ_HEADER="Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
-          WORKER_HEADER="Authorization: Bearer ${{ secrets.HF_SLAT_KEY }}"
+
+          # 타임아웃 설정 (10초): 서버가 멍 때리면 Action 시간 낭비하지 말고 끊어버리기 위함
+          CURL_OPT="-s -o /dev/null --max-time 10"
 
           # ---------------------------------------------------------
           # 1. 일반 서비스 (GET /openapi.json) - 가볍게 찌르기
           # ---------------------------------------------------------
           echo "--- Light Wake Up ---"
-          curl -s -o /dev/null -w "%{http_code} Reranker\n" -X GET https://freebird920-slat-reranker.hf.space/openapi.json -H "$READ_HEADER"
-          curl -s -o /dev/null -w "%{http_code} Crawler Master\n" -X GET https://freebird920-slat-crawler-master.hf.space/openapi.json -H "$READ_HEADER"
-          curl -s -o /dev/null -w "%{http_code} Crawler 1\n" -X GET https://freebird920-slat-crawler-1.hf.space/openapi.json -H "$READ_HEADER"
-          curl -s -o /dev/null -w "%{http_code} Reamer-AIS\n" -X GET https://freebird920-slat-reamer-hf-ais.hf.space/openapi.json -H "$READ_HEADER"
-
-          curl -s -o /dev/null -w "%{http_code} Reamer-MASTER\n" -X GET https://freebird920-slat-reamer-hf-reamer-master.hf.space/openapi.json -H "$READ_HEADER"
-          curl -s -o /dev/null -w "%{http_code} Reamer-AIS\n" -X GET https://freebird920-slat-reamer-hf-query-vector-01.hf.space/openapi.json -H "$READ_HEADER"
+          curl $CURL_OPT -w "%{http_code} Reranker\n"       -X GET https://freebird920-slat-reranker.hf.space/openapi.json -H "$READ_HEADER"
+          curl $CURL_OPT -w "%{http_code} Crawler Master\n" -X GET https://freebird920-slat-crawler-master.hf.space/openapi.json -H "$READ_HEADER"
+          curl $CURL_OPT -w "%{http_code} Crawler 1\n"      -X GET https://freebird920-slat-crawler-1.hf.space/openapi.json -H "$READ_HEADER"
+          curl $CURL_OPT -w "%{http_code} Reamer-AIS\n"     -X GET https://freebird920-slat-reamer-hf-ais.hf.space/openapi.json -H "$READ_HEADER"
+          # Reamer-MASTER의 GET 요청은 아래 POST로 대체하여 삭제함
+          curl $CURL_OPT -w "%{http_code} Query-Vector-01\n" -X GET https://freebird920-slat-reamer-hf-query-vector-01.hf.space/openapi.json -H "$READ_HEADER"
 
           # ---------------------------------------------------------
-          # 2. 임베딩 서버 (POST /embed) - 무겁게 찌르기 (Heavy Inference)
-          # 실제 텍스트를 보내서 CPU/GPU가 일을 하게 만듭니다.
+          # 2. 핵심 서비스 (POST 요청) - 확실하게 깨우기 (App Logic)
           # ---------------------------------------------------------
-          echo "--- Heavy Wake Up (Embedding) ---"
+          echo "--- Heavy Wake Up (Embedding & Master) ---"
           
-          # 주의: curl로 보낼 때는 JSON 형식을 직접 써줘야 합니다.
-          # KoE5 모델이므로 "text" 필드 안에 "query: " 접두어 포함!
-          curl -s -o /dev/null -w "%{http_code} Embedder-01\n" \
+          # Embedder-01
+          curl $CURL_OPT -w "%{http_code} Embedder-01\n" \
             -X POST https://freebird920-slat-reamer-hf-query-embeder-01.hf.space/embed \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"text": "query: ping"}'
 
-          curl -s -o /dev/null -w "%{http_code} Embedder-02\n" \
+          # Embedder-02
+          curl $CURL_OPT -w "%{http_code} Embedder-02\n" \
             -X POST https://freebird920-slat-reamer-hf-query-embeder-02.hf.space/embed \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"text": "query: ping"}'
             
-          curl -s -o /dev/null -w "%{http_code} Reamer-MASTER\n" \
+          # Reamer-MASTER (Huma Ping)
+          curl $CURL_OPT -w "%{http_code} Reamer-MASTER\n" \
             -X POST https://freebird920-slat-reamer-hf-reamer-master.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"message": "wake_up_neo"}'
-          echo "✅ 모든 서버 기상 완료!"
+            
+          echo "✅ 모든 서버 기상 확인 완료!"
