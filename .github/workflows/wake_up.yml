@@ -52,14 +52,12 @@ jobs:
             -H "$READ_HEADER" \
             -d '{"text": "query: ping"}'
             
-          # Reamer-MASTER (Huma Ping)
           curl $CURL_OPT -w "%{http_code} Reamer-MASTER\n" \
             -X POST https://freebird920-slat-reamer-hf-reamer-master.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"message": "wake_up_neo"}'
 
-          # Reamer-MASTER (Huma Ping)
           curl $CURL_OPT -w "%{http_code} Reamer-MASTER\n" \
             -X POST https://freebird920-slat-reamer-hf-query-vector-01.hf.space/api/ping \
             -H "Content-Type: application/json" \
