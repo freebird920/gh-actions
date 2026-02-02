@@ -18,7 +18,7 @@ jobs:
           
           # 공통 헤더
           READ_HEADER="Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
-
+          READ_HEADER_GOOGLE="Authorization: Bearer ${{ secrets.HF_GOOGLE_KEY }}"          
           # 타임아웃 설정 (10초): 서버가 멍 때리면 Action 시간 낭비하지 말고 끊어버리기 위함
           CURL_OPT="-s -o /dev/null --max-time 10"
 
@@ -62,5 +62,12 @@ jobs:
             -X POST https://freebird920-slat-reamer-hf-query-vector-01.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
+            -d '{"message": "wake_up_neo"}'            
+          echo "✅ 모든 서버 기상 확인 완료!"
+
+          curl $CURL_OPT -w "%{http_code} slat-crawler-01\n" \
+            -X POST https://freebird-han-g-slat-crawler-01.hf.space/api/ping \
+            -H "Content-Type: application/json" \
+            -H "$READ_HEADER_GOOGLE" \
             -d '{"message": "wake_up_neo"}'            
           echo "✅ 모든 서버 기상 확인 완료!"
