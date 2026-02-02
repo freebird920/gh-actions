@@ -65,6 +65,15 @@ jobs:
             -d '{"message": "wake_up_neo"}'            
           echo "✅ 모든 서버 기상 확인 완료!"
 
+
+          curl $CURL_OPT -w "%{http_code} Reamer-MASTER\n" \
+            -X POST https://freebird920-slat-crawler-master.hf.space/api/ping \
+            -H "Content-Type: application/json" \
+            -H "$READ_HEADER" \
+            -d '{"message": "wake_up_neo"}'            
+          echo "✅ 모든 서버 기상 확인 완료!"
+
+
           curl $CURL_OPT -w "%{http_code} slat-crawler-01\n" \
             -X POST https://freebird-han-g-slat-crawler-01.hf.space/api/ping \
             -H "Content-Type: application/json" \
@@ -74,6 +83,19 @@ jobs:
 
           curl $CURL_OPT -w "%{http_code} slat-crawler-02\n" \
             -X POST https://freebird-han-g-slat-crawler-02.hf.space/api/ping \
+            -H "Content-Type: application/json" \
+            -H "$READ_HEADER_GOOGLE" \
+            -d '{"message": "wake_up_neo"}'            
+          echo "✅ 모든 서버 기상 확인 완료!"
+
+          curl $CURL_OPT -w "%{http_code} slat-crawler-03\n" \
+            -X POST https://freebird-han-g-slat-crawler-03.hf.space/api/ping \
+            -H "Content-Type: application/json" \
+            -H "$READ_HEADER_GOOGLE" \
+            -d '{"message": "wake_up_neo"}'            
+          echo "✅ 모든 서버 기상 확인 완료!"
+          curl $CURL_OPT -w "%{http_code} slat-crawler-04\n" \
+            -X POST https://freebird-han-g-slat-crawler-04.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER_GOOGLE" \
             -d '{"message": "wake_up_neo"}'            
