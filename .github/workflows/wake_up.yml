@@ -26,7 +26,6 @@ jobs:
           # 1. 일반 서비스 (GET /openapi.json) - 가볍게 찌르기
           # ---------------------------------------------------------
           echo "--- Light Wake Up ---"
-          curl $CURL_OPT -w "%{http_code} Reranker\n"       -X GET https://freebird920-slat-reranker.hf.space/openapi.json -H "$READ_HEADER"
           curl $CURL_OPT -w "%{http_code} Crawler Master\n" -X GET https://freebird920-slat-crawler-master.hf.space/openapi.json -H "$READ_HEADER"
           curl $CURL_OPT -w "%{http_code} Crawler 1\n"      -X GET https://freebird920-slat-crawler-1.hf.space/openapi.json -H "$READ_HEADER"
           curl $CURL_OPT -w "%{http_code} Reamer-AIS\n"     -X GET https://freebird920-slat-reamer-hf-ais.hf.space/openapi.json -H "$READ_HEADER"
