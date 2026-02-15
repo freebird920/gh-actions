@@ -2,7 +2,7 @@ name: Service Keeper (Wake Up Service)
 
 on:
   schedule:
-    - cron: "*/10 * * * *" # 10분마다
+    - cron: "*/5 * * * *" # 10분마다
   push:
     branches: ["main"]
   workflow_dispatch:
