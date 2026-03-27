@@ -137,7 +137,7 @@ jobs:
 
           echo "========================================"
           if [ $ERRORS -gt 0 ]; then
-            echo "::error::🚨 좆됐음: 총 ${ERRORS}개의 서비스가 뒤졌거나 응답이 없다!"
+            echo "::error::🚨 총 ${ERRORS}개의 서비스가 뒤졌거나 응답이 없다!"
             echo -e "💀 뻗은 명단:$FAILED_SERVICES"
             exit 1
           else
