@@ -15,22 +15,40 @@ jobs:
       - name: Wake Up All Services (Curl)
         run: |
           echo "🔥 서버 대깨우기 작전 시작..."
+          
+          # GitHub Actions 기본값인 set -e를 끄고 직접 제어한다 이기야
+          set +e
+          ERRORS=0
+          FAILED_SERVICES=""
 
           # 공통 헤더
           READ_HEADER="Authorization: Bearer ${{ secrets.HF_READ_TOKEN }}"
           READ_HEADER_GOOGLE="Authorization: Bearer ${{ secrets.HF_GOOGLE_KEY }}"          
-          # 타임아웃 설정 (10초): 서버가 멍 때리면 Action 시간 낭비하지 말고 끊어버리기 위함
-          CURL_OPT="-s -o /dev/null --max-time 20"
+          # 타임아웃 설정 (10초), 그리고 -f (HTTP 4xx 5xx 에러시 실패코드 반환) 추가
+          CURL_OPT="-s -o /dev/null --max-time 20 -f"
+
+          check_err() {
+            if [ $? -ne 0 ]; then
+              echo "❌ 씨발 실패함: $1"
+              ERRORS=$((ERRORS + 1))
+              FAILED_SERVICES="$FAILED_SERVICES\n- $1"
+            else
+              echo "✅ 기상 완료: $1"
+            fi
+          }
 
           # ---------------------------------------------------------
           # 1. 일반 서비스 (GET /openapi.json) - 가볍게 찌르기
           # ---------------------------------------------------------
           echo "--- Light Wake Up ---"
           curl $CURL_OPT -w "%{http_code} Crawler Master\n" -X GET https://freebird920-slat-crawler-master.hf.space/openapi.json -H "$READ_HEADER"
+          check_err "Crawler Master"
+
           curl $CURL_OPT -w "%{http_code} Crawler 1\n"      -X GET https://freebird920-slat-crawler-1.hf.space/openapi.json -H "$READ_HEADER"
+          check_err "Crawler 1"
+
           curl $CURL_OPT -w "%{http_code} Reamer-AIS\n"     -X GET https://freebird920-slat-reamer-hf-ais.hf.space/openapi.json -H "$READ_HEADER"
-          # Reamer-MASTER의 GET 요청은 아래 POST로 대체하여 삭제함
-          # curl $CURL_OPT -w "%{http_code} Query-Vector-01\n" -X GET https://freebird920-slat-reamer-hf-query-vector-01.hf.space/openapi.json -H "$READ_HEADER"
+          check_err "Reamer-AIS"
 
           # ---------------------------------------------------------
           # 2. 핵심 서비스 (POST 요청) - 확실하게 깨우기 (App Logic)
@@ -43,14 +61,7 @@ jobs:
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"text": "query: ping"}'
-
-          # # Embedder-02
-          # curl $CURL_OPT -w "%{http_code} Embedder-02\n" \
-          #   -X POST https://freebird920-slat-reamer-hf-query-embeder-02.hf.space/embed \
-          #   -H "Content-Type: application/json" \
-          #   -H "$READ_HEADER" \
-          #   -d '{"text": "query: ping"}'
-
+          check_err "Embedder-01"
 
           # Embedder-BGE-M3-01
           curl $CURL_OPT -w "%{http_code} hf-query-embeder-bge-m3-01\n" \
@@ -58,72 +69,77 @@ jobs:
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"text": "ping"}'
-          echo "Embedder-BGE-M3-02 기상!"
+          check_err "Embedder-BGE-M3-01"
 
-
-          # Embedder-BGE-M3-01
+          # Embedder-BGE-M3-02
           curl $CURL_OPT -w "%{http_code} hf-query-embeder-bge-m3-02\n" \
             -X POST https://freebird920-slat-reamer-hf-query-embeder-bge-m3-02.hf.space/embed \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"text": "ping"}'
-          echo "Embedder-BGE-M3-02 기상!"
+          check_err "Embedder-BGE-M3-02"
 
           curl $CURL_OPT -w "%{http_code} Reamer-MASTER\n" \
             -X POST https://freebird920-slat-reamer-hf-reamer-master.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"message": "wake_up_neo"}'
-          echo "Reamer-MASTER 기상!"
-
+          check_err "Reamer-MASTER"
 
           curl $CURL_OPT -w "%{http_code} query-vector-01\n" \
             -X POST https://freebird920-slat-reamer-hf-query-vector-01.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"message": "wake_up_neo"}'            
-          echo "query-vector-01 기상 확인 완료!"
+          check_err "query-vector-01"
 
           curl $CURL_OPT -w "%{http_code} query-vector-02\n" \
             -X POST https://freebird920-slat-reamer-hf-query-vector-02.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"message": "wake_up_neo"}'            
-          echo "query-vector-02 기상 확인 완료!"
-
+          check_err "query-vector-02"
 
           curl $CURL_OPT -w "%{http_code} crawler-MASTER\n" \
             -X POST https://freebird920-slat-crawler-master.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"message": "wake_up_neo"}'            
-          echo "crawler-MASTER!"
-
+          check_err "crawler-MASTER"
 
           curl $CURL_OPT -w "%{http_code} slat-crawler-01\n" \
             -X POST https://freebird-han-g-slat-crawler-01.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER_GOOGLE" \
             -d '{"message": "wake_up_neo"}'            
-          echo "slat-crawler-01 기상 확인 완료!"
+          check_err "slat-crawler-01"
 
           curl $CURL_OPT -w "%{http_code} slat-crawler-02\n" \
             -X POST https://freebird-han-g-slat-crawler-02.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER_GOOGLE" \
             -d '{"message": "wake_up_neo"}'            
-          echo "slat-crawler-02 기상 확인 완료!"
+          check_err "slat-crawler-02"
 
           curl $CURL_OPT -w "%{http_code} slat-crawler-03\n" \
             -X POST https://freebird-han-g-slat-crawler-03.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER_GOOGLE" \
             -d '{"message": "wake_up_neo"}'            
-          echo "slat-crawler-03 기상 확인 완료!"
+          check_err "slat-crawler-03"
 
           curl $CURL_OPT -w "%{http_code} slat-crawler-04\n" \
             -X POST https://freebird-han-g-slat-crawler-04.hf.space/api/ping \
             -H "Content-Type: application/json" \
             -H "$READ_HEADER_GOOGLE" \
             -d '{"message": "wake_up_neo"}'            
-          echo "slat-crawler-04 기상 확인 완료!"
+          check_err "slat-crawler-04"
+
+          echo "========================================"
+          if [ $ERRORS -gt 0 ]; then
+            echo "::error::🚨 좆됐음: 총 ${ERRORS}개의 서비스가 뒤졌거나 응답이 없다!"
+            echo -e "💀 뻗은 명단:$FAILED_SERVICES"
+            exit 1
+          else
+            echo "🎉 모든 서비스가 무사히 굴러가고 있다."
+          fi
