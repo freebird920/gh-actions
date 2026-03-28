@@ -56,12 +56,12 @@ jobs:
           echo "--- Heavy Wake Up (Embedding & Master) ---"
 
           # Embedder-01
-          curl $CURL_OPT -w "%{http_code} Embedder-01\n" \
-            -X POST https://freebird920-slat-reamer-hf-query-embeder-01.hf.space/embed \
-            -H "Content-Type: application/json" \
-            -H "$READ_HEADER" \
-            -d '{"text": "query: ping"}'
-          check_err "Embedder-01"
+          # curl $CURL_OPT -w "%{http_code} Embedder-01\n" \
+          #   -X POST https://freebird920-slat-reamer-hf-query-embeder-01.hf.space/embed \
+          #   -H "Content-Type: application/json" \
+          #   -H "$READ_HEADER" \
+          #   -d '{"text": "query: ping"}'
+          # check_err "Embedder-01"
 
           # Embedder-BGE-M3-01
           curl $CURL_OPT -w "%{http_code} hf-query-embeder-bge-m3-01\n" \
