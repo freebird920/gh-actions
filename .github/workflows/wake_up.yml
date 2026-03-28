@@ -105,7 +105,7 @@ jobs:
             -H "Content-Type: application/json" \
             -H "$READ_HEADER" \
             -d '{"message": "wake_up_neo"}'            
-          check_err "query-vector-02"
+          check_err "slat-booksle-server"
 
           # curl $CURL_OPT -w "%{http_code} crawler-MASTER\n" \
           #   -X POST https://freebird920-slat-crawler-master.hf.space/api/ping \
