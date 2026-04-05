@@ -40,10 +40,6 @@ jobs:
           # ---------------------------------------------------------
           # 1. 일반 서비스 (GET /openapi.json) - 가볍게 찌르기
           # ---------------------------------------------------------
-          echo "---  ---"
-          # curl $CURL_OPT -w "%{http_code} AI_SON\n" -X GET https://ai-son-job-go-client.freebird-han.workers.dev/api/supabase-ping -H "$READ_HEADER"
-          # check_err "AI_SON"
-
           echo "--- Light Wake Up ---"
           # curl $CURL_OPT -w "%{http_code} Crawler Master\n" -X GET https://freebird920-slat-crawler-master.hf.space/openapi.json -H "$READ_HEADER"
           # check_err "Crawler Master"
@@ -145,6 +141,17 @@ jobs:
           #   -H "$READ_HEADER_GOOGLE" \
           #   -d '{"message": "wake_up_neo"}'            
           # check_err "slat-crawler-04"
+
+
+          # ---------------------------------------------------------
+          # 3. Cloudflare Worker & External Services
+          # ---------------------------------------------------------
+          echo "--- CF Worker Wake Up (Supabase Ping) ---"
+
+          # Cloudflare Worker는 HF Token이 필요 없으므로 헤더 제외하고 순수하게 찌른다
+          curl $CURL_OPT -w "%{http_code} Supabase-Ping\n" \
+            -X GET "https://ai-son-job-go-client.freebird-han.workers.dev/api/supabase-ping"
+          check_err "Supabase-Ping"
 
           echo "========================================"
           if [ $ERRORS -gt 0 ]; then
