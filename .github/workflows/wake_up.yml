@@ -41,7 +41,7 @@ jobs:
           # 1. 일반 서비스 (GET /openapi.json) - 가볍게 찌르기
           # ---------------------------------------------------------
           echo "---  ---"
-          # curl $CURL_OPT -w "%{http_code} AI_SON\n" -X GET https://ai-son-job-go-client.freebird-han.workers.dev/api/supabase-ping
+          # curl $CURL_OPT -w "%{http_code} AI_SON\n" -X GET https://ai-son-job-go-client.freebird-han.workers.dev/api/supabase-ping -H "$READ_HEADER"
           # check_err "AI_SON"
 
           echo "--- Light Wake Up ---"
