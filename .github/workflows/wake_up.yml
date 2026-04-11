@@ -149,9 +149,9 @@ jobs:
           echo "--- CF Worker Wake Up (Supabase Ping) ---"
 
           # # Cloudflare Worker는 HF Token이 필요 없으므로 헤더 제외하고 순수하게 찌른다
-          # curl $CURL_OPT -w "%{http_code} Supabase-Ping\n" \
-          #   -X GET "https://ai-son-job-go-client.booksle.workers.dev/api/supabase-ping"
-          # check_err "Supabase-Ping"
+          curl $CURL_OPT -w "%{http_code} Supabase-Ping\n" \
+            -X GET "https://booksle.booksle.workers.dev/api/supabase-ping"
+          check_err "Supabase-Ping"
 
           echo "========================================"
           if [ $ERRORS -gt 0 ]; then
